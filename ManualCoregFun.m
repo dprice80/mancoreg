@@ -127,7 +127,7 @@ while correct == 0;
     M = [xL yL zL;xR yR zR;xN yN zN];
     
     % Convert to mm.
-    Mmm = M-T';
+    Mmm = [M, [1 1 1]']*T';
     
     % X Direction
     % X L
@@ -215,13 +215,16 @@ while correct == 0;
     
     % Convert to mm.
 %     Mmm = M-repmat(origin,3,1);
-    Mmm = M*T';
+    Mmm = [M, [1 1 1]']*T';
     
+    fid.left = Mmm(1,1:3);
+    fid.right = Mmm(2,1:3);
+    fid.nasion = Mmm(3,1:3);
     
     switch choice
         case 1 % save the data and clear up the mess
             correct = 1;
-            save([savedir '/%s' fname '_fid.mat'],'Mmm')
+            save([savedir '/%s' fname '_fid.mat'],'fid')
         case 2 % do nothing to rerun while-loop
             
         case 3 % flag up this subject
@@ -229,7 +232,7 @@ while correct == 0;
             save([savedir '/Flagged.mat'],'')
         case 4
             correct = 1;
-            save([savedir '/' fname '_fid.mat'],'Mmm')
+            save([savedir '/' fname '_fid.mat'],'fid')
             Quitting = 1; %#ok<NASGU>
     end
     
