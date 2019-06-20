@@ -1,0 +1,40 @@
+% Example to run manual coreg on some camcan data
+
+% Steps 
+% Run spm coreg
+% Reslice image
+
+clear all
+
+addpath /imaging/dp01/toolboxes/mancoreg/nifti_analyse
+addpath /imaging/dp01/toolboxes/mancoreg
+
+
+for ii = q.allexist
+   
+    flags.which = 1;
+    [fl, fil, ext] = fileparts(q.filenames.T1{ii});
+    spm_reslice({'c1MNI152_T1_1mm_brain.nii', })
+    
+end
+
+ resliceNIIs_job(FileListSource{ii})
+
+%%
+
+ManualCoregFun(resliced_image_name);
+
+
+%% 
+
+colormap gray
+
+nii = load_untouch_nii(coreg_im);
+load(fidlocs);
+figure(1); clf
+imagesc(squeeze(nii.img(:,round(fid.native.vox.lpa(2)),:)))
+set(gca,'YDir','normal')
+hold on
+plot(fid.native.vox.lpa(3), fid.native.vox.lpa(1), 'Marker', '+', 'MarkerSize', 30)
+pause(1)
+
