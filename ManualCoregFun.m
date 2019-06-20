@@ -3,7 +3,9 @@ function [] = ManualCoregFun(Filename)
 % Darren Price - 25/06/14
 % Inputs
 % Filename = filename of resliced NII file with 1mm isotropic resolution.
-% S = settings
+% Input file should ideally be recogistered to MNI space using a rigid body
+% transformation and resliced (reslicing is very important).
+
 if nargin < 2
     S.blurval = 1.2;
     S.overwrite = 1;
@@ -23,9 +25,9 @@ if ~isfield(S,'save')
     S.save = 1;
 end
 
-[SaveLocsToDir,~,~] = fileparts(Filename);
+[savedir,fname,~] = fileparts(Filename);
 
-if exist([SaveLocsToDir '/FiducialLocs.mat'],'file') || exist([SaveLocsToDir '/Flagged.mat'],'file')
+if exist([savedir '/' fname '_fid.mat'],'file') || exist([savedir '/Flagged.mat'],'file')
     disp(['Subject Completed or Flagged: ' Filename])
     if overwrite == 0
         disp(['Subject in progress: ' Filename])
@@ -126,7 +128,6 @@ while correct == 0;
     
     % Convert to mm.
     Mmm = M-repmat(origin,3,1);
-%     Mmm = [M, [1 1 1]']*T';
     
     % X Direction
     % X L
@@ -219,15 +220,15 @@ while correct == 0;
     switch choice
         case 1 % save the data and clear up the mess
             correct = 1;
-            save([SaveLocsToDir '/FiducialLocs.mat'],'Mmm')
+            save([savedir '/%s' fname '_fid.mat'],'Mmm')
         case 2 % do nothing to rerun while-loop
             
         case 3 % flag up this subject
             correct = 3;
-            save([SaveLocsToDir '/Flagged.mat'],'')
+            save([savedir '/Flagged.mat'],'')
         case 4
             correct = 1;
-            save([SaveLocsToDir '/FiducialLocs.mat'],'Mmm')
+            save([savedir '/' fname '_fid.mat'],'Mmm')
             Quitting = 1; %#ok<NASGU>
     end
     
