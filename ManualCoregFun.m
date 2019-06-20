@@ -127,7 +127,7 @@ while correct == 0;
     M = [xL yL zL;xR yR zR;xN yN zN];
     
     % Convert to mm.
-    Mmm = M-repmat(origin,3,1);
+    Mmm = M-T';
     
     % X Direction
     % X L
@@ -214,8 +214,9 @@ while correct == 0;
     end
     
     % Convert to mm.
-    Mmm = M-repmat(origin,3,1);
-
+%     Mmm = M-repmat(origin,3,1);
+    Mmm = M*T';
+    
     
     switch choice
         case 1 % save the data and clear up the mess
